@@ -5,12 +5,14 @@ const { poorlyTranslate, syncReadFile } = require('./function');
 const express = require("express");
 const app = express();
 const port = process.env.PORT || 3000;
+const path = require('path');
 
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
+app.use("*/app", express.static(path.join(__dirname , '/app')));
 
 
-let lang_code_list = (syncReadFile('./lang_code_list.txt'));
+let lang_code_list = (syncReadFile('./src/lang_code_list.txt'));
 let lang_code = [];
 
 for (let i in lang_code_list) {
@@ -27,9 +29,10 @@ app.post("/api/get-translate", async (req, res, next) => {
     let random = source;
     let random1 = target;
     let output = text;
+    let code = lang_code.filter(v => !v.includes([source,target]));
 
     for (let i = 0; i < chaotic; i++) {
-        random1 = lang_code[Math.floor(Math.random() * lang_code.length)];
+        random1 = code[Math.floor(Math.random() * code.length)];
         output = await poorlyTranslate(String(output), random, random1);
         random = random1;
         // console.log(output.translation, random, random1);
