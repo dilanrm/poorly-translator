@@ -20,6 +20,10 @@ for (let i in lang_code_list) {
     lang_code[i] = lang_code_list[i][1];
 }
 
+app.get("/", (req,res) => {
+    res.redirect("/app");
+})
+
 app.post("/api/get-lang-code", (req, res) => {
     res.json(lang_code_list);
 })
